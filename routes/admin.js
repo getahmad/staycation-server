@@ -41,5 +41,6 @@ router.delete("/item/:itemId/activity/:id", adminController.deleteActivity);
 
 //ednpoint booking
 router.get("/booking", adminController.viewBooking);
+router.get("/booking/:id", adminController.showDetailBooking);
 
 module.exports = router;
