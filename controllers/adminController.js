@@ -61,13 +61,22 @@ module.exports = {
   },
 
   //method view dashboard
-  viewDashboard: (req, res) => {
+  viewDashboard: async (req, res) => {
     try {
+      const booking = await Booking.find();
+      const member = await Member.find();
+      const item = await Item.find();
+
       res.render("admin/dashboard/view_dashboard", {
         title: "Staycation | Dashboard",
         user: req.session.user,
+        member,
+        booking,
+        item,
       });
-    } catch (error) {}
+    } catch (error) {
+      res.redirect("/admin/dashboard");
+    }
   },
 
   //method category
@@ -585,6 +594,9 @@ module.exports = {
   showDetailBooking: async (req, res) => {
     const { id } = req.params;
     try {
+      const alertMessage = req.flash("alertMessage");
+      const alertStatus = req.flash("alertStatus");
+      const alert = { message: alertMessage, status: alertStatus };
       const booking = await Booking.findOne({ _id: id })
         .populate("memberId")
         .populate("bankId");
@@ -592,7 +604,36 @@ module.exports = {
         title: "Staycation | Detail Booking",
         user: req.session.user,
         booking,
+        alert,
       });
-    } catch (error) {}
+    } catch (error) {
+      res.redirect("/admin/booking");
+    }
+  },
+  actionConfirmation: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const booking = await Booking.findOne({ _id: id });
+      booking.payments.status = "Accept";
+      await booking.save();
+      req.flash("alertMessage", "Success Confirmation");
+      req.flash("alertStatus", "success");
+      res.redirect(`/admin/booking/${id}`);
+    } catch (error) {
+      res.redirect(`/admin/booking/${id}`);
+    }
+  },
+  actionReject: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const booking = await Booking.findOne({ _id: id });
+      booking.payments.status = "Reject";
+      await booking.save();
+      req.flash("alertMessage", "Success Reject");
+      req.flash("alertStatus", "success");
+      res.redirect(`/admin/booking/${id}`);
+    } catch (error) {
+      res.redirect(`/admin/booking/${id}`);
+    }
   },
 };
