@@ -9,12 +9,16 @@ const flash = require("connect-flash");
 
 //import mongoose
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/db_staycation", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+mongoose.connect(
+  // "mongodb+srv://getahmad:aNcItYZBtgzjWAtq@cluster0.wbdgr.mongodb.net/db_staycation?retryWrites=true&w=majority"
+  "mongodb://getahmad:aNcItYZBtgzjWAtq@cluster0-shard-00-00.wbdgr.mongodb.net:27017,cluster0-shard-00-01.wbdgr.mongodb.net:27017,cluster0-shard-00-02.wbdgr.mongodb.net:27017/db_staycation?ssl=true&replicaSet=atlas-b3wjfo-shard-0&authSource=admin&retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  }
+);
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
